@@ -4,11 +4,11 @@ include <configuration.scad>;
 
 use <vertex.scad>;
 
-$fn = 240;
+$fn = 50;
 
 module frame_top() {
   difference() {
-    vertex(extrusion+0.1, idler_offset=3, idler_space=12.5, fin_w=5.2, fin_d=4, fins=1, fn=280);
+    vertex(extrusion+0.1, idler_offset=3, idler_space=12.5, fin_w=5.2, fin_d=4, fins=1, fn=100);
     // M3 bolt to support idler bearings.
     translate([0, 65, 0]) rotate([90, 0, 0]) cylinder(r=m3_radius, h=55);
     
