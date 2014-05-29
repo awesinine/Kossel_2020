@@ -3,7 +3,7 @@ include <configuration.scad>;
 use <vertex.scad>;
 use <nema17.scad>;
 
-$fn = 280;
+$fn = 50;
 
 fin_w=5;
 fin_d=4;  // 5x4 for the vertical extrusion fins
@@ -15,7 +15,7 @@ motor_z_offset = 1.5; // use 1.5 for 40mm height
 module frame_motor() {
   difference() {
     // No idler cones.
-  vertex(motor_frame_height, idler_offset=0, idler_space=100, fin_w=fin_w, fin_d=fin_d, fins=fins, fn=200);
+  vertex(motor_frame_height, idler_offset=0, idler_space=100, fin_w=fin_w, fin_d=fin_d, fins=fins, fn=100);
 
     // KOSSEL logotype.
     translate([23, -11, 0]) rotate([90, -90, 30])
