@@ -2,7 +2,7 @@ include <configuration.scad>;
 
 use <vertex.scad>;
 
-$fn = 50;
+$fn = 280;
 
 
 fin_w=5.2;
@@ -14,7 +14,7 @@ motor_z_offset = 1.5; // use 1.5 for 40mm height
 
 module frame_top() {
   difference() {
-  	vertex(top_frame_height, idler_offset=3, idler_space=12.5, fin_w=fin_w, fin_d=fin_d, fins=fins, fn=100);
+  	vertex(top_frame_height, idler_offset=3, idler_space=12.5, fin_w=fin_w, fin_d=fin_d, fins=fins, fn=200);
 
     // KOSSEL logotype.
     translate([23, -11, 0]) rotate([90, -90, 30])
