@@ -7,11 +7,11 @@ explode = 0.0;   // set > 0.0 to push the parts apar1t
 
 delta_min_angle = 21; // the minimul angle of the diagonal rod as full extension while still being on the print surface  
 
-frame_motor_h = 50;  //heaight of motor fram vertex
-frame_top_h = 20;
+frame_motor_h = 50;  //height of motor fram vertex
+frame_top_h = 50;  //20;
  
-frame_extrusion_l = 342.9; //length of extrusions for horizontals, need cut length
-frame_extrusion_h = 857.4375; //length of extrusions for towers, need cut length
+frame_extrusion_l = 372; //length of extrusions for horizontals, need cut length
+frame_extrusion_h = 762; //length of extrusions for towers, need cut length
 frame_extrusion_w = 20;
 frame_depth = frame_extrusion_w/2; // used when calculating offsets
 
@@ -71,10 +71,10 @@ echo("Build plate radius:",surface_r,"mm");
 
 //frame_color=[0.7,0.25,0.7,0.98];
 //frame_color2=[0.9,0.3,0.9,0.88];
-frame_color=[0.6,0.6,0.6,0.98];
-frame_color2=[0.65,0.65,0.65,0.88];
+frame_color=[0.0,0.0,0.7,0.95];
+frame_color2=[1.0,1.0,1.0,1.0];
 rod_color=[0.1,0.1,0.1,0.88];
-t_slot_color="silver";
+t_slot_color="black";
 rail_color = [1,1,1,1];
 plate_color=[0.7,0.7,1.0,0.5];
 
@@ -96,29 +96,19 @@ echo("Max Build Height:",calc_max_z,"mm assuming a narrow tower or cone shaped b
 
 
 $fn=60;
-//Horizontal t-slot
-//X-Y
-translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2-explode])rotate([0,90,0]) color(t_slot_color) extrusion_20(frame_extrusion_l);
-translate([-frame_extrusion_l/2,-frame_offset,frame_motor_h-frame_extrusion_w/2-explode])rotate([0,90,0]) color(t_slot_color)extrusion_20(frame_extrusion_l);
-
-//Y-Z
-rotate([0,0,120]){
-translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2-explode])rotate([0,90,0]) color(t_slot_color)extrusion_20(frame_extrusion_l);
-translate([-frame_extrusion_l/2,-frame_offset,frame_motor_h-frame_extrusion_w/2-explode])rotate([0,90,0]) color(t_slot_color)extrusion_20(frame_extrusion_l);
+// Bottom horizontal t-slots
+for(a = [0, 120, -120])
+{
+	rotate([0, 0, a]) {
+	translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2-explode])rotate([0,90,0]) color(t_slot_color) extrusion_20(frame_extrusion_l);
+	translate([-frame_extrusion_l/2,-frame_offset,frame_motor_h-frame_extrusion_w/2-explode])rotate([0,90,0]) color(t_slot_color)extrusion_20(frame_extrusion_l);
+	}
 }
-
-//X-Z
-rotate([0,0,-120]){
-translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2-explode]) rotate([0,90,0])color(t_slot_color)extrusion_20(frame_extrusion_l);
-translate([-frame_extrusion_l/2,-frame_offset,frame_motor_h-frame_extrusion_w/2-explode]) rotate([0,90,0])color(t_slot_color)extrusion_20(frame_extrusion_l);
-}
-
 
 //motor_frame
-translate([-(sin60*frame_size),-(cos60*frame_size),0-explode]) rotate([0,0,-60])color(frame_color)import("frame_motor.stl"); //x-tower
-translate([(sin60*frame_size),-(cos60*frame_size),0-explode]) rotate([0,0,60])color(frame_color)import("frame_motor.stl");   //y-tower
-translate([0,frame_size,0-explode])rotate([0,0,180]) color(frame_color)import("frame_motor.stl");       //z-tower
-//translate([0,frame_size,frame_motor_h-explode])rotate([0,0,180]) color(frame_color)import("../../kossel-master/BOM_tight/frame_motor.stl");       //z-tower
+translate([-(sin60*frame_size),-(cos60*frame_size),0-explode]) rotate([0,0,-60])color(frame_color)import("../frame_motor.stl"); //x-tower
+translate([(sin60*frame_size),-(cos60*frame_size),0-explode]) rotate([0,0,60])color(frame_color)import("../frame_motor.stl");   //y-tower
+translate([0,frame_size,0-explode])rotate([0,0,180]) color(frame_color)import("../frame_motor.stl");       //z-tower
 
 
 //vertical t-slot
@@ -128,15 +118,18 @@ translate([0,frame_size,0]) rotate([0,0,180])color(t_slot_color)extrusion_20(fra
 
 
 //top frame
-translate([-(sin60*frame_size),-(cos60*frame_size),frame_top]) rotate([0,0,-60])color(frame_color)import("frame_top.stl"); //x-tower
-translate([(sin60*frame_size),-(cos60*frame_size),frame_top]) rotate([0,0,60])color(frame_color)import("frame_top.stl");   //y-tower
-translate([0,frame_size,frame_top]) rotate([0,0,180])color(frame_color)import("frame_top.stl");       //z-tower
+translate([-(sin60*frame_size),-(cos60*frame_size),frame_top]) rotate([0,0,-60])color(frame_color)import("../frame_top.stl"); //x-tower
+translate([(sin60*frame_size),-(cos60*frame_size),frame_top]) rotate([0,0,60])color(frame_color)import("../frame_top.stl");   //y-tower
+translate([0,frame_size,frame_top]) rotate([0,0,180])color(frame_color)import("../frame_top.stl");       //z-tower
 
-//Top t-slot
-translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2 + frame_top]) rotate([0,90,0])color(t_slot_color)extrusion_20(frame_extrusion_l); //X-Y
-rotate([0,0,120])translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2 + frame_top]) rotate([0,90,0])color(t_slot_color)extrusion_20(frame_extrusion_l); //Y-Z
-rotate([0,0,-120])translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2 + frame_top]) rotate([0,90,0])color(t_slot_color)extrusion_20(frame_extrusion_l); //X-Z
-
+//Top horizontal t-slots
+for(a = [0, 120, -120])
+{
+	rotate([0, 0, a]) {
+	translate([-frame_extrusion_l/2,-frame_offset,frame_extrusion_w/2 + frame_top])rotate([0,90,0]) color(t_slot_color) extrusion_20(frame_extrusion_l);
+	translate([-frame_extrusion_l/2,-frame_offset,frame_motor_h-frame_extrusion_w/2 + frame_top])rotate([0,90,0]) color(t_slot_color)extrusion_20(frame_extrusion_l);
+	}
+}
 
 //slides
 translate([-(sin60*(frame_size)),-(cos60*(frame_size)),calc_carriage_z])rotate([0,0,-60])color(frame_color)import("tower_slides.stl");
@@ -198,16 +191,6 @@ translate([rod_separation,effector_offset,frame_motor_h + effector_h/2 + effecto
 translate([rod_separation,effector_offset+DELTA_RADIUS,frame_motor_h + effector_h/2 + effector_z - explode]) rotate([0,0,-90]) color("orange") cylinder(h=delta_vert_l, r=rod_r);
 //Ramps mount
 //translate([-80,145,40])rotate([0,0,-120]) color(frame_color)import("mega2560_kutu_Kulak.stl");
-
-
-// This module is used to create a dynamic length extrusion from a 1000mm extrusion STL file
-module extrusion_15(len=240){
-  difference(){
-    import("1515_1000mm.stl", convexity=10);
-    translate([-10,-10,len])cube([20,20,(1000-len)+2]);
-  }
-
-}
 
 // This module is used to create a dynamic length rail from a 1000mm rail STL file
 module rail(len=240){
