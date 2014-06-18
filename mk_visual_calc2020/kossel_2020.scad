@@ -10,8 +10,8 @@ delta_min_angle = 21; // the minimul angle of the diagonal rod as full extension
 frame_motor_h = 50;  //height of motor fram vertex
 frame_top_h = 50;  //20;
  
-frame_extrusion_l = 372; //length of extrusions for horizontals, need cut length
-frame_extrusion_h = 762; //length of extrusions for towers, need cut length
+frame_extrusion_l = 360; //length of extrusions for horizontals, need cut length
+frame_extrusion_h = 700; //length of extrusions for towers, need cut length
 frame_extrusion_w = 20;
 frame_depth = frame_extrusion_w/2; // used when calculating offsets
 
