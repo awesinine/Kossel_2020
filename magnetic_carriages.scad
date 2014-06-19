@@ -15,9 +15,9 @@ module 20mm_frame(){
 			translate([-base_width/2,-base_length/2+corner_rad,0]){
 				cube([base_width,base_length-corner_rad,base_height]);}
 			translate([-(base_width/2-corner_rad),-(base_length/2-corner_rad),0]){
-				cylinder(h=base_height,r=4);}
+				cylinder(h=base_height,r=4, $fn=100);}
 			translate([(base_width/2-corner_rad),-(base_length/2-corner_rad),0]){
-				cylinder(h=base_height,r=4);}
+				cylinder(h=base_height,r=4, $fn=100);}
 
 		}
 		translate([0,-4,0]) for(a=[0:90:359]){  // rail carriage bolt holes
@@ -41,34 +41,34 @@ module ball_holders(){
 		union(){
 			hull(){ //right
 					translate([arm_distance/2,(base_length/2-corner_rad)-4,0]){ //cylinder..
-						cylinder(h=base_height,r=6);} 
+						cylinder(h=base_height,r=6, $fn=100);} 
 					translate([base_width/2,(base_length-(base_length/1.5))/2,base_height/2]){ //wing
 						cube([0.1,base_length/1.5,base_height],center=true);}
 					translate([arm_distance/2,(base_length/2-corner_rad)-4,base_height]){ //boss
-						rotate([35,0,0]) cylinder(h=2,r=6.5);}
+						rotate([35,0,0]) cylinder(h=2,r=6.5, $fn=100);}
 			}
 			hull(){ //left
 					translate([-arm_distance/2,(base_length/2-corner_rad)-4,0]){ //cylinder..
-						cylinder(h=base_height,r=6);}
+						cylinder(h=base_height,r=6, $fn=100);}
 					translate([-base_width/2,(base_length-(base_length/1.5))/2,base_height/2]){ //wing
 						cube([0.1,base_length/1.5,base_height],center=true);}
 					translate([-arm_distance/2,(base_length/2-corner_rad)-4,base_height]){ //boss
-						rotate([35,0,0]) cylinder(h=2,r=6.5);}
+						rotate([35,0,0]) cylinder(h=2,r=6.5, $fn=100);}
 			}
 		}
 		
 		hull(){ //right rod clearance
-			translate([arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,-12]) cylinder(h=20,r1=4,r2=4);
-			translate([arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,12]) cylinder(h=20,r1=4,r2=4);
+			translate([arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,-12]) cylinder(h=20,r1=4,r2=4, $fn=100);
+			translate([arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,12]) cylinder(h=20,r1=4,r2=4, $fn=100);
 		}
 		hull(){ //left rod clearance
-			translate([-arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,12]) cylinder(h=20,r1=4,r2=4);
-			translate([-arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,-12]) cylinder(h=20,r1=4,r2=4);
+			translate([-arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,12]) cylinder(h=20,r1=4,r2=4, $fn=100);
+			translate([-arm_distance/2, (base_length/2-corner_rad)-5, 9]) rotate([90,0,-12]) cylinder(h=20,r1=4,r2=4, $fn=100);
 		}
 
 		//sphere pockets
-		translate([arm_distance/2, (base_length/2-corner_rad)-5, 9]) sphere(ball_radius);
-		translate([-arm_distance/2, (base_length/2-corner_rad)-5, 9]) sphere(ball_radius);		
+		translate([arm_distance/2, (base_length/2-corner_rad)-5, 9]) sphere(ball_radius, $fn=100);
+		translate([-arm_distance/2, (base_length/2-corner_rad)-5, 9]) sphere(ball_radius, $fn=100);		
 
 	}
 }
