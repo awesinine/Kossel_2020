@@ -5,7 +5,7 @@ corner_rad=4;
 arm_distance=42;
 sphere_offset_y=5.75; //offset from bolt holes to center of sphere
 ball_radius=4.7625;
-belt_clamp_height = 5.1;
+belt_clamp_height = 6.2;
 
 $fn=24;
 
