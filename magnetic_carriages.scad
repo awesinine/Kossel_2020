@@ -1,4 +1,4 @@
-base_length=40;
+base_length=45;
 base_width=27.25;
 base_height=6.5;
 corner_rad=4;
@@ -48,9 +48,9 @@ module belt_clamp(){
    }
 
    // top cube
-   translate([3.20, (5 + corner_radius + 10/2 + 1.5), 0])  cube([5, 10, belt_clamp_height], center=true);
+   translate([3.20, (5 + corner_radius + 12.5/2 + 1.5), 0])  cube([5, 12.5, belt_clamp_height], center=true);
    // bottom cube
-   translate([3.20, -(5 + corner_radius + 10/2 + 1.5), 0]) cube([5, 10, belt_clamp_height], center=true);
+   translate([3.20, -(5 + corner_radius + 12.5/2 + 1.5), 0]) cube([5, 12.5, belt_clamp_height], center=true);
 	// solid side
 	translate([3.20 + solid_side_width + belt_gap, 0, 0]) cube([solid_side_width, base_length, belt_clamp_height], center=true);	
 }
@@ -115,8 +115,8 @@ module carriage(){
 		}
 
 		// screw holes
-		translate([0,-4,0]) for(a=[0:90:359]){  // rail carriage bolt holes
-			rotate([0,0,a]) translate([10,10,-5]) cylinder(h=20,r=1.5,$fn=18);
+		translate([0,0,0]) for(a=[0:90:359]){  // rail carriage bolt holes
+			rotate([0,0,a]) translate([10,10,-5]) cylinder(h=20,r=1.55,$fn=18);
 		}
 
 	}
