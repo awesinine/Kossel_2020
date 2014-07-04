@@ -13,7 +13,7 @@
 
 $fn = 360/4;
 
-include <configuration.scad>;
+include <configuration_HaydnHuntley.scad>;
 
 // All measurements in mm.
 insideBaseRadius        = 43.0 / 2;
@@ -21,8 +21,8 @@ ledRadius				= insideBaseRadius + 3.0;
 releauxRadius			= 120.0 / 2;
 centerBaseHeight        = 3.0;
 baseHeight              = 8.0;
-mountHeight             = 5.5;  // The height of the mount.
-mountHeightExt			= 4.0;  // The height of the next part of the mount.
+mountHeight             = 6.3;  // The height of the mount.
+mountHeightExt				= 4.0;  // The height of the next part of the mount.
 minMountHoleRadius      = (12.15+0.5) / 2;
 maxMountHoleRadius      = (16.15+0.2) / 2;
 maxMountHoleLooseRadius = (maxMountHoleRadius + 0.5);
@@ -176,7 +176,7 @@ module effectorInside()
 
 		// Oblong hole for the top of the groove mount.
 		translate([0, 0, mountHeight])
-		hull()
+#		hull()
 		{
 			translate([0, 0, -smidge/2])
 			cylinder(r=maxMountHoleRadius, h=mountHeight+smidge);
