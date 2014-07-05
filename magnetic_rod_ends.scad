@@ -1,4 +1,4 @@
-magnet_dia = 9.5;
+magnet_dia = 10.0;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
@@ -7,6 +7,8 @@ gap = 3.0;
 
 $fn=100;
 
+module rodEnd()
+{
 difference(){
 
 	// main body
@@ -29,3 +31,6 @@ difference(){
 	translate([0,0,magnet_length + rod_connector_length + gap + rod_dia - 0.5]) sphere(9.5/2);
 %	translate([0,0,magnet_length + rod_connector_length + gap + rod_dia - 0.5]) sphere(9.5/2);
 }
+}
+
+rotate([180,0,0]) rodEnd();
