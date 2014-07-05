@@ -2,8 +2,8 @@ magnet_dia = 10.5;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
-wall_thickness = 2.4;
-gap = 3.0;
+wall_thickness = 1.6;
+gap = 2.0;
 
 $fn=100;
 
@@ -16,8 +16,6 @@ difference(){
 		sphere(rod_dia/2.0 + wall_thickness, center=true);
 		translate([0,0,rod_connector_length]) 
 			cylinder(h=magnet_length+gap+rod_dia, r=magnet_dia/2 + 1.0);
-//		translate([0,0,magnet_length + rod_connector_length + gap + rod_dia]) 
-			//sphere(magnet_dia/2 + 1.0);
 	}
 
 	// cut off the top
