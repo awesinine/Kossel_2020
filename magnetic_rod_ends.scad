@@ -1,4 +1,4 @@
-magnet_dia = 10.0;
+magnet_dia = 10.5;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
