@@ -1,5 +1,5 @@
 ball_dia = 9.5;
-magnet_dia = 9.5 + 0.5;
+magnet_dia = 9.5 + 0.75;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
