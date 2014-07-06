@@ -1,5 +1,5 @@
 ball_dia = 9.5;
-magnet_dia = 10.5;
+magnet_dia = 9.5 + 0.5;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
@@ -27,14 +27,19 @@ difference(){
 	translate([0,0,rod_connector_length + 1.5]) cylinder(h=magnet_length + gap,r=magnet_dia/2.0);
 
 	// cut out for the rod
-	translate([0,0,-6.1]) cylinder(h=rod_connector_length + 8, r=rod_dia/2.0 + 0.3);
+	translate([0,0,-6.1]) cylinder(h=rod_connector_length + 8, r=rod_dia/2.0 + 0.1);
 	// add slope
 	translate([0,0,rod_connector_length]) sphere(magnet_dia/2);
 
 	// cut out for the ball
 	translate([0,0,magnet_length + rod_connector_length + gap + rod_dia - 0.5]) sphere(ball_dia/2);
-	translate([0,0,magnet_length + rod_connector_length + gap + rod_dia - 0.5]) sphere(ball_dia/2);
 }
+
+	// Show the ball
+	%translate([0,0,magnet_length + rod_connector_length + gap + rod_dia - 0.5]) sphere(ball_dia/2);
+
+	// Show the magnet
+%	translate([0,12,rod_connector_length + 1.5]) cylinder(h=magnet_length + gap,r=magnet_dia/2.0);
 }
 
 rotate([180,0,0]) rodEnd();
