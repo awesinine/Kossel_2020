@@ -3,7 +3,7 @@ magnet_dia = 9.5 + 0.5;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
-wall_thickness = 1.2;
+wall_thickness = 1.8;
 gap = 1.0;		// Accounts for the extra gap created by the ball cutout
 
 $fn=100;
