@@ -3,7 +3,7 @@ magnet_dia = 9.5 + 0.5;
 magnet_length = 9.5;
 rod_dia = 5.8;
 rod_connector_length = 15.0;
-wall_thickness = 1.6;
+wall_thickness = 1.2;
 gap = 1.0;		// Accounts for the extra gap created by the ball cutout
 
 $fn=100;
@@ -14,9 +14,9 @@ difference(){
 
 	// main body
 	hull(){
-		sphere(rod_dia/2.0 + wall_thickness, center=true);
+		sphere((rod_dia+wall_thickness)/2.0, center=true);
 		translate([0,0,rod_connector_length]) 
-			cylinder(h=magnet_length+gap+ball_dia/2-1.5, r=magnet_dia/2 + 1.0);
+			cylinder(h=magnet_length+gap+ball_dia/2-1.5, r=(magnet_dia+wall_thickness)/2);
 	}
 
 	// cut off the top
