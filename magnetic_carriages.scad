@@ -1,36 +1,45 @@
+include <configuration.scad>;
+
 base_length=45;
 base_width=27.25;
 base_height=6.5;
 corner_rad=4;
-arm_distance=42;
+arm_distance=48;
 sphere_offset_y=5.75; //offset from bolt holes to center of sphere
 ball_radius=4.7625;
 belt_clamp_height = 6.2;
 
-$fn=24;
+
+mmPerInch			= 25.4;
+
+separation = 40;
+
+horn_thickness = 13;
+horn_x = 8;
+
+belt_width = 5;
+belt_x = 5.6;
+belt_z = 7;
+
+ballJointSeparation = arm_distance;
+ballRadius			= (3/8 * mmPerInch)/2;
+ballBaseRadius		= 10.0 / 2;
+wingWidth			= 12.0;
+wingHeight			= 12.0;
+
+$fn=100;
 
 
 module 20mm_frame(){
-	translate([0,0,0]) difference(){
-	hull(){ //square base with rounder bottom corners
-
-			translate([-base_width/2,-base_length/2+corner_rad,0]){
-				cube([base_width,base_length-corner_rad,base_height]);}
-			translate([-(base_width/2-corner_rad),-(base_length/2-corner_rad),0]){
-				cylinder(h=base_height,r=4, $fn=100);}
-			translate([(base_width/2-corner_rad),-(base_length/2-corner_rad),0]){
-				cylinder(h=base_height,r=4, $fn=100);}
-
-		}
-	}
-}
-
-module belt_holder(){
-	union(){
-		translate([-3.3,-0.5,base_height-0.1]) cube([7,8,7.1]);//top
-		translate([-2,-9.6,base_height-0.1]) cube([8.6,7.5,7.1]);//middle
-		translate([-3.3,-19.2,base_height-0.1]) cube([7,7.9,7.1]);//bottom
-
+	translate([0,0,0]) union(){
+		hull(){ //square base with rounder bottom corners
+				translate([-base_width/2,-base_length/2+corner_rad,0]){
+					cube([base_width,base_length-corner_rad,base_height]);}
+				translate([-(base_width/2-corner_rad),-(base_length/2-corner_rad),0]){
+					cylinder(h=base_height,r=4, $fn=100);}
+				translate([(base_width/2-corner_rad),-(base_length/2-corner_rad),0])
+					cylinder(h=base_height,r=4, $fn=100);
+			}
 	}
 }
 
@@ -55,36 +64,105 @@ module belt_clamp(){
 	translate([3.20 + solid_side_width + belt_gap, 0, 0]) cube([solid_side_width, base_length, belt_clamp_height], center=true);	
 }
 
-module ball_holders(){
-	socket_height = base_height + 5;
 
-	difference(){
-
-		union(){
-			hull(){ //right
-					translate([arm_distance/2,(base_length/2-corner_rad)-4,0]){ //cylinder..
-						cylinder(h=base_height,r=6, $fn=100);} 
-					translate([base_width/2,(base_length-(base_length/1.5))/2,base_height/2]){ //wing
-						cube([0.1,base_length/1.5,base_height],center=true);}
-					translate([arm_distance/2,(base_length/2-corner_rad)-4,socket_height]){ //boss
-						rotate([35,0,0]) cylinder(h=2,r=6.5, $fn=100);}
+module stud_wings(spacing, height)
+{
+	filletRadius = 6;
+	heightOffset = -3;
+	difference () {
+		union () {
+			// Add wings to hold the ball screws.
+			translate([0, -wingHeight/2, base_height/2])
+			roundedBox([spacing+wingWidth, wingHeight, height],
+					   filletRadius, true);
+			
+			// Add two pillars in the wings, angled at 30 degrees, for the
+			// ball studs.
+			translate([0, .63, 0])
+			union()
+			{
+				for (x = [-1, 1]) {
+					hull()
+					{
+						translate([x*spacing/2, 0, heightOffset])
+						rotate([30, 0, 0])
+						translate([0, 0, 11])
+						cylinder(r=ballBaseRadius, h=5.7);
+		
+						translate([x*(spacing)/2,
+								   -wingHeight/2-0.63,
+								   height/2])
+						roundedBox([wingWidth, wingHeight, height], filletRadius,
+								true);
+					}
+				}					
 			}
-			hull(){ //left
-					translate([-arm_distance/2,(base_length/2-corner_rad)-4,0]){ //cylinder..
-						cylinder(h=base_height,r=6, $fn=100);}
-					translate([-base_width/2,(base_length-(base_length/1.5))/2,base_height/2]){ //wing
-						cube([0.1,base_length/1.5,base_height],center=true);}
-					translate([-arm_distance/2,(base_length/2-corner_rad)-4,socket_height]){ //boss
-						rotate([35,0,0]) cylinder(h=2,r=6.5, $fn=100);}
-			}
-
-			translate([0,0,base_height+belt_clamp_height/2-0.1]) belt_clamp();
 		}
+		// Two holes in the wings, angled at 30 degrees, for the ball studs,
+		// and with nut traps.
+		translate([0, 0.6, heightOffset]) 
+		for (x = [-1, 1]) {
+				translate([x*spacing/2, 0, 0])
+				rotate([30, 0, 0])
+				m3x10((14)/cos(30));
+		}
+	}
+}
 
-		//sphere pockets
-		translate([arm_distance/2, (base_length/2-corner_rad)-5, 14]) sphere(ball_radius, $fn=100);
-		translate([-arm_distance/2, (base_length/2-corner_rad)-5, 14]) sphere(ball_radius, $fn=100);		
+module roundedBox(size, radius, sidesonly)
+{
+	rot = [ [0,0,0], [90,0,90], [90,90,0] ];
+   	if (sidesonly)
+	{
+   		cube(size - [2*radius,0,0], true);
+      	cube(size - [0,2*radius,0], true);
+      	for (x = [radius-size[0]/2, -radius+size[0]/2],
+      		  y = [radius-size[1]/2, -radius+size[1]/2])
+		{
+      		translate([x,y,0])
+				cylinder(r=radius, h=size[2], center=true);
+      }
+   }
+	else
+	{
+   		cube([size[0], size[1]-radius*2, size[2]-radius*2], 
+			  center=true);
+      cube([size[0]-radius*2, size[1], size[2]-radius*2],
+			  center=true);
+      cube([size[0]-radius*2, size[1]-radius*2, size[2]],
+			  center=true);
 
+      for (axis = [0:2])
+		{
+      		for (x = [radius-size[axis]/2, -radius+size[axis]/2],
+              y = [radius-size[(axis+1)%3]/2, 
+						-radius+size[(axis+1)%3]/2])
+			{
+         		rotate(rot[axis]) 
+					translate([x,y,0]) 
+                	cylinder(h=size[(axis+2)%3]-2*radius, 
+								   r=radius, center=true);
+			}
+		}
+   		for (x = [radius-size[0]/2, -radius+size[0]/2],
+           y = [radius-size[1]/2, -radius+size[1]/2],
+           z = [radius-size[2]/2, -radius+size[2]/2])
+		{
+      		translate([x,y,z]) sphere(radius);
+      }
+	}
+}
+
+
+module m3x10(h)
+{
+	translate([0, 0, -m3_wide_radius])
+	{
+		cylinder(r=m3_wide_radius, h=h+2*m3_wide_radius);
+		translate([0, 0, -2])
+		cylinder(r1=m3_nut_radius+0.5,
+				 r2=m3_nut_radius,
+				 h=h+2*m3_wide_radius-5, $fn=6);
 	}
 }
 
@@ -92,12 +170,24 @@ module carriage(){
 	difference() {
 		union(){
 			20mm_frame(); 
-			ball_holders();
+			// Belt clamps
+			translate([0,0,base_height-0.1])
+			intersection() {
+			 	translate([0,0,belt_clamp_height/2]) belt_clamp();
+				20mm_frame();
+			}
+      	// Magnetic attachment 'wings'
+      	translate([0, 24, 0])
+			  stud_wings(ballJointSeparation, base_height);
+			// Wing support
+			difference() {
+				
+			}
 		}
 
 		//right rod clearance
 		hull(){ 
-		#	translate([arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,-12]) cylinder(h=40,r1=4,r2=4, $fn=100);
+			translate([arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,-12]) cylinder(h=40,r1=4,r2=4, $fn=100);
 			translate([arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,12]) cylinder(h=40,r1=4,r2=4, $fn=100);
 		}
 
@@ -120,4 +210,4 @@ module carriage(){
 //translate([-arm_distance/2, (base_length/2-corner_rad)-4, 8]) sphere(ball_radius);
 
 carriage();
-
+//stud_wings(ballJointSeparation, base_height);
