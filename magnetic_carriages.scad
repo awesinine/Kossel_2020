@@ -180,28 +180,21 @@ module carriage(){
       	translate([0, 24, 0])
 			  stud_wings(ballJointSeparation, base_height);
 			// Wing support
-			difference() {
-				
+			for(x=[-1,1])
+			{
+				translate([x*(base_width/2+4.9),7.1,base_height/2])
+				difference() {
+					cube([10,10,base_height],center=true);
+					translate([x*5,-5,-(base_height/2+0.1)])
+					linear_extrude(height=base_height+0.2, center=false, convexity=10, twist=0)
+						circle(10);
+				}
 			}
 		}
-
-		//right rod clearance
-		hull(){ 
-			translate([arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,-12]) cylinder(h=40,r1=4,r2=4, $fn=100);
-			translate([arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,12]) cylinder(h=40,r1=4,r2=4, $fn=100);
-		}
-
-		//left rod clearance
-		hull(){ 
-			translate([-arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,12]) cylinder(h=40,r1=4,r2=4, $fn=100);
-			translate([-arm_distance/2, (base_length/2-corner_rad)-5, 14]) rotate([90,0,-12]) cylinder(h=40,r1=4,r2=4, $fn=100);
-		}
-
 		// screw holes
 		translate([0,0,0]) for(a=[0:90:359]){  // rail carriage bolt holes
 			rotate([0,0,a]) translate([10,10,-5]) cylinder(h=20,r=1.55,$fn=18);
 		}
-
 	}
 }
 //scale(25.4) import("MagnetCarriage.stl");
@@ -211,3 +204,4 @@ module carriage(){
 
 carriage();
 //stud_wings(ballJointSeparation, base_height);
+
