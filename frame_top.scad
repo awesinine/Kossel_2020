@@ -18,12 +18,12 @@ module frame_top() {
 
     // KOSSEL logotype.
     translate([23, -11, 0]) rotate([90, -90, 30])
-      scale([0.11, 0.11, 1]) #import("logotype.stl");
+      scale([0.11, 0.11, 1]) import("logotype.stl");
     // Motor cable paths.
     for (mirror = [-1, 1]) scale([mirror, 1, 1]) {
       translate([-35, 45, 0]) rotate([0, 0, -30])
          cube([4, 15, 15], center=true);
-      translate([-6-3, 0, 0]) cylinder(r=3.5, h=40);
+      translate([-6-3, 0, -35]) cylinder(r=3.5, h=40);
       translate([-11, 0, 0])  cube([15, 5.2, 15], center=true);
     }
 
@@ -38,6 +38,7 @@ module frame_top() {
     }
    //sink innner belt pulley screw
    translate([0,49-thickness,(extrusion/2)/2-5])rotate([90,0,0])cylinder(h=5, r=3, center=true);
+
 
   }
 }
