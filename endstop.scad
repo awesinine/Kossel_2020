@@ -2,7 +2,7 @@ include <configuration.scad>;
 
 use <microswitch.scad>;
 
-thickness = 7;  // 1mm thicker than linear rail.
+thickness = 10;  // 4mm thicker than linear rail, so that endstop switch hits carriage.
 width = extrusion;  // Same as vertical extrusion.
 height = 15;
 fin_w=6;
