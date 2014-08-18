@@ -57,15 +57,5 @@ module endstop(offset=thickness/2,neg=1) {
   }
 }
 
-
-translate([0,extrusion/2+thickness/2,-60/2]) %difference(){
-  import("./assembly/2020_1000mm.stl", convexity=10);
-   translate([-12,-12,60])cube([24,24,(1000-60)+2]);
-}
-//translate([0, 0, height/2]) endstop(-thickness/2,side);
-translate([0, 0, height/2]) endstop(2,1);
-%rotate([180,0,0])
-//translate([side*(width-3), -(7.5+thickness/2), height/2+5]) 
-translate([0,-(width+thickness), height/2+5])
-
-endstop(-thickness/2,side);
+rotate([90,0,0])
+	endstop(-thickness/2,side);
