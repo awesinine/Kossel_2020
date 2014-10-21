@@ -7,13 +7,18 @@
 // Haydn Huntley
 // haydn.huntley@gmail.com
 
-
 // Holds one hot end using a groove mount.
 // Note: assumes a layer height of 0.2mm.
 
+// TODO:
+// change the mount key so that it is easier to print?
+// try right side up, but remove the bottom again?
+// change the mount key to use 0,0 as the reference point.
+// put the screws in straight.
+
 $fn = 360/4;
 
-include <configuration_HaydnHuntley.scad>;
+include <configuration.scad>;
 
 // All measurements in mm.
 insideBaseRadius        = 43.0 / 2;
@@ -21,8 +26,8 @@ ledRadius				= insideBaseRadius + 3.0;
 releauxRadius			= 120.0 / 2;
 centerBaseHeight        = 3.0;
 baseHeight              = 8.0;
-mountHeight             = 6.1;  // The height of the mount.
-mountHeightExt				= 4.0;  // The height of the next part of the mount.
+mountHeight             = 5.5;  // The height of the mount.
+mountHeightExt			= 4.0;  // The height of the next part of the mount.
 minMountHoleRadius      = (12.15+0.5) / 2;
 maxMountHoleRadius      = (16.15+0.2) / 2;
 maxMountHoleLooseRadius = (maxMountHoleRadius + 0.5);
@@ -32,7 +37,11 @@ edgeRadius              = baseHeight/2;
 sides                   = 3;
 sideOffset			    = insideBaseRadius;
 sideLength              = ballJointSeparation + 3 * edgeRadius;
-secureScrewOffset       = 15.0;
+secureScrewX			= 15.0;
+secureScrewY			= 4.0;
+secureScrewZ			= (mountHeight+mountHeightExt-2)/2+centerBaseHeight;
+keyX					= (2 * insideBaseRadius) - 6;
+keyY					= 3.0;
 
 
 module releauxPiece(angle, size, base, height)
@@ -108,8 +117,7 @@ module effectorOutside()
 
 		// Center hole.
 		translate([0, 0, -smidge/2])
-		cylinder(r=insideBaseRadius,
-				 h=baseHeight+smidge);
+		cylinder(r=insideBaseRadius, h=baseHeight+smidge);
 
 		// M3 holes for attaching ball studs.
 		for (i = [0:sides])
@@ -131,16 +139,63 @@ module effectorOutside()
 
 		// COMMENT THIS OUT TO DISPLAY ON LINUX!
 		// Holes for attaching the LED lights.
-		for (i = [0:2])
+		for (i = [1, 2])
+		{
 			for (j = [-20, 20])
-				rotate([0, 0, 30+i*120+j])
+				for (dir = [-1, 1])
 				{
-					translate([ledRadius, -0.05*mmPerInch, -smidge/2])
-					cylinder(r=1.0, h=baseHeight+smidge, $fn=16);
-					translate([ledRadius, 0.05*mmPerInch, -smidge/2])
-					cylinder(r=1.0, h=baseHeight+smidge, $fn=16);
+					rotate([0, 0, 30+i*120+j+dir*2.92])
+					{
+						translate([ledRadius, 0, -1])
+						cylinder(r=1.0, h=baseHeight+2, $fn=16);
+					}
+				}
+			// Common hole between LED leads.
+			rotate([0, 0, 30+i*120])
+			translate([ledRadius-1, 0, -smidge/2])
+			cylinder(r=1.0, h=baseHeight+smidge, $fn=16);
+			
+			// Gutter between LED leads and common hole.
+			hull()
+			{
+				rotate([0, 0, 30+i*120-20+2.92])
+				translate([ledRadius, 0, baseHeight-1+smidge/2])
+				cylinder(r=1.0, h=1.0, $fn=16);
+				
+				rotate([0, 0, 30+i*120+20-2.92])
+				translate([ledRadius, 0, baseHeight-1+smidge/2])
+				cylinder(r=1.0, h=1.0, $fn=16);
+			}
+/*
+			// Common hole outside leads.
+			rotate([0, 0, 60+30+i*120])
+			translate([ledRadius-2, 0, -smidge/2])
+			#cylinder(r=1.0, h=baseHeight+smidge, $fn=16);
+*/			
+			// Pairs of holes outside leads.
+			for (dir = [-1, 1])
+			{
+				rotate([0, 0, 30+i*120+dir*20+dir*3*2.92])
+				translate([ledRadius-1, 0, -smidge/2])
+				cylinder(r=1.0, h=baseHeight+smidge, $fn=16);
+			}
+
+			// Top gutters between LED leads and outside holes.
+			for (dir = [-1, 1])
+				hull()
+				{
+					rotate([0, 0, 30+i*120+dir*20+dir*2.92])
+					translate([ledRadius, 0, baseHeight-1+smidge/2])
+					cylinder(r=1.0, h=1.0, $fn=16);
+					
+					rotate([0, 0, 30+i*120+dir*20+dir*3*2.92])
+					translate([ledRadius-1, 0, baseHeight-1+smidge/2])
+					cylinder(r=1.0, h=1.0, $fn=16);
 				}
 
+			// Bottom gutters between holes outside leads.
+			bottomGutter(1);
+		}
 	}
 }
 
@@ -162,6 +217,10 @@ module effectorInside()
 				translate([0, 0, mountHeight])
 				cylinder(r=maxMountHoleRadius, h=mountHeightExt+smidge);
 			}
+
+			// Wings for securing screws.
+			translate([-keyX/2, 2.5-smidge-keyY/2, 0])
+			cube([keyX, keyY, mountHeight+mountHeightExt]);
 		}
 	
 		// Oblong hole for the mount.
@@ -170,13 +229,13 @@ module effectorInside()
 			translate([0, 0, -smidge/2])
 			cylinder(r=minMountHoleRadius, h=mountHeight+smidge);
 
-			translate([0, maxMountHoleOffset, -smidge/2])
+			translate([0, maxMountHoleOffset+8, -smidge/2])
 			cylinder(r=minMountHoleRadius, h=mountHeight+smidge);
 		}
 
 		// Oblong hole for the top of the groove mount.
 		translate([0, 0, mountHeight])
-#		hull()
+		hull()
 		{
 			translate([0, 0, -smidge/2])
 			cylinder(r=maxMountHoleRadius, h=mountHeight+smidge);
@@ -190,61 +249,73 @@ module effectorInside()
 		cylinder(r=maxMountHoleLooseRadius, h=mountHeight+smidge);
 
 		// Two holes for securing the mount key.
-		rotate([0, 0, 60])
-		translate([0, secureScrewOffset, -smidge/2])
-		cylinder(r=m3LooseRadius, 10, $fn=16);
+		translate([secureScrewX, secureScrewY, secureScrewZ])
+		rotate([-90, 0, 0])
+		cylinder(r=m3LooseRadius, 10+smidge, center=true, $fn=16);
 
-		rotate([0, 0, -60])
-		translate([0, secureScrewOffset, -smidge/2])
-		cylinder(r=m3LooseRadius, 10, $fn=16);
+		translate([-secureScrewX, secureScrewY, secureScrewZ])
+		rotate([-90, 0, 0])
+		cylinder(r=m3LooseRadius, 10+smidge, center=true, $fn=16);
+
+		// Finish the bottom gutters between holes' outside leads.
+		bottomGutter(1);
 	}	
+}
+
+module bottomGutter(i)
+{
+	hull()
+	{
+		rotate([0, 0, 30+i*120+20+3*2.92])
+		translate([ledRadius-1, 0, -smidge/2])
+		cylinder(r=1.0, h=1, $fn=16);
+				
+		rotate([0, 0, 30+(i+1)*120-20-3*2.92])
+		translate([ledRadius-1, 0, -smidge/2])
+		cylinder(r=1.0, h=1, $fn=16);
+	}
 }
 
 
 module mountKey(extra=0)
 {
-	h = mountHeight - centerBaseHeight + extra;
-	r = 4.0;
-
+	h = mountHeight + mountHeightExt - centerBaseHeight + extra;
+	
 	difference()
 	{
 		union()
 		{
-			hull()
-			{
-				rotate([0, 0, 60])
-				translate([0, secureScrewOffset, 0])
-				cylinder(r=r, h);
+			// The wings on the side of the mount key for securing it.
+			translate([-keyX/2, keyY, centerBaseHeight])
+			cube([keyX, keyY, h+extra]);
 
-				rotate([0, 0, -60])
-				translate([0, secureScrewOffset, 0])
-				cylinder(r=r, h);
-			}
-
-			cylinder(r=maxMountHoleRadius+3,
-					 h=h+mountHeightExt);
-			translate([0, 0, h])
-			cylinder(r=maxMountHoleRadius, h=mountHeightExt);
+			// The cylindrical body.
+			translate([0, 0, centerBaseHeight])
+			cylinder(r=maxMountHoleRadius+3, h=h);
 		}
 
-		translate([-secureScrewOffset, -3*r, -smidge/2])
-		cube([2*secureScrewOffset, 4*r, h+mountHeightExt+smidge]);
+		// The box which clips off the flat edge against the mount.
+		translate([-keyX/2,
+		           keyY-2*maxMountHoleRadius,
+		           centerBaseHeight-smidge/2])
+		cube([keyX, 2*maxMountHoleRadius, h+smidge]);
 
 		// Hole for the mount.
 		translate([0, 0, -smidge/2])
-		cylinder(r=minMountHoleRadius, h=h+smidge);
+		cylinder(r=minMountHoleRadius, h=mountHeight+smidge);
 
-		translate([0, 0, h])
-		cylinder(r=maxMountHoleRadius, h=mountHeightExt+smidge);
+		// Hole for the top of the groove mount.			
+		translate([0, 0, mountHeight-smidge/2])
+		cylinder(r=maxMountHoleRadius, h=mountHeight+smidge);
 
 		// Two holes for securing the mount key.
-		rotate([0, 0, 60])
-		translate([0, secureScrewOffset, -smidge/2])
-		cylinder(r=m3LooseRadius, h+smidge, $fn=16);
+		translate([secureScrewX, secureScrewY, secureScrewZ])
+		rotate([-90, 0, 0])
+		cylinder(r=m3LooseRadius, 10+smidge, center=true, $fn=16);
 
-		rotate([0, 0, -60])
-		translate([0, secureScrewOffset, -smidge/2])
-		cylinder(r=m3LooseRadius, h+smidge, $fn=16);
+		translate([-secureScrewX, secureScrewY, secureScrewZ])
+		rotate([-90, 0, 0])
+		cylinder(r=m3LooseRadius, 10+smidge, center=true, $fn=16);
 	}
 }
 
@@ -257,13 +328,18 @@ union()
 	{
 		effectorInside();
 
-		translate([0, 0, centerBaseHeight])
-		mountKey(smidge);
+		// The box which clips off the flat edge against the mount key.
+		// The extra smidge in the -Y direction helps hold it tight.
+		translate([-keyX/2,
+		           keyY-smidge,
+		           centerBaseHeight])
+		cube([keyX,
+		      maxMountHoleRadius,
+		      mountHeight + mountHeightExt - centerBaseHeight+smidge]);
 	}
 	
-	%translate([0, 0, centerBaseHeight])
-	mountKey();
+	%mountKey();
 
-	translate([0, 28, 0])
+	translate([0, 28, -centerBaseHeight])
 	mountKey();
 }
