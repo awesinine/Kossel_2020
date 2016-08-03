@@ -57,11 +57,14 @@ module belt_clamp(){
    }
 
    // top cube
-   translate([3.20, (5 + corner_radius + 12.5/2 + 1.5), 0])  cube([5, 12.5, belt_clamp_height], center=true);
+   cube_width = 10;
+   right_align = 5.70;
+   
+   translate([(right_align - cube_width/2), (5 + corner_radius + 12.5/2 + 1.5), 0])  cube([cube_width, 12.5, belt_clamp_height], center=true);
    // bottom cube
-   translate([3.20, -(5 + corner_radius + 12.5/2 + 1.5), 0]) cube([5, 12.5, belt_clamp_height], center=true);
+   translate([(right_align - cube_width/2), -(5 + corner_radius + 12.5/2 + 1.5), 0]) cube([cube_width, 12.5, belt_clamp_height], center=true);
 	// solid side
-	translate([3.20 + solid_side_width + belt_gap, 0, 0]) cube([solid_side_width, base_length, belt_clamp_height], center=true);	
+	translate([3.2 + solid_side_width + belt_gap, 0, 0]) cube([solid_side_width, base_length, belt_clamp_height], center=true);	
 }
 
 
@@ -195,6 +198,8 @@ module carriage(){
 		translate([0,0,0]) for(a=[0:90:359]){  // rail carriage bolt holes
 			rotate([0,0,a]) translate([10,10,-5]) cylinder(h=20,r=1.55,$fn=18);
 		}
+        // thread mounting screw hole
+        translate([0, 15, -1]) cylinder(h=20, r=1.40, $fn=18);
 	}
 }
 //scale(25.4) import("MagnetCarriage.stl");
